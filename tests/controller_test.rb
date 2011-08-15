@@ -8,11 +8,11 @@ class ControllerTest < Test::Unit::TestCase
   end
   
   def test_render_to_string
-    puts @controller.render_to_string("index")
+    assert_match /Hello/, @controller.render_to_string("index")
   end
   
   def test_template_path
-    assert_equal File.expand_path("../views/home/index.erb"), @controller.template_path("index")
+    assert_equal File.expand_path("../../views/home/index.erb", __FILE__), @controller.template_path("index")
   end
   
   def test_controller_name

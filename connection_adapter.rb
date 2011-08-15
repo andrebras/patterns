@@ -14,7 +14,7 @@ class ConnectionAdapter
   end
   
   def columns(table_name)
-    table_info(table_name).map { |info| info["name"] }
+    table_info(table_name).map { |info| info["name"].to_sym }
   end
   
   def map_columns_to_values(columns, values)

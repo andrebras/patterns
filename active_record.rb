@@ -9,7 +9,6 @@ module ActiveRecord
     end
 
     def method_missing(name, *arg)
-      name = name.to_s
       columns = @@connection.columns(self.class.table_name)
       
       if columns.include?(name)

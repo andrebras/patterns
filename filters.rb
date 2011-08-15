@@ -1,28 +1,40 @@
 require "active_support/all"
 
 module Filters
-  extend ActiveSupport::Concern
-  include ActiveSupport::Callbacks
-  
-  included do
-    define_callbacks :process
+  def self.included(base)
+    base.extend ClassMethods
+    base.class_attribute :before_filters
+    base.before_filters = []
+    base.class_attribute :after_filters
+    base.after_filters = []
+    base.class_attribute :around_filters
+    base.around_filters = []
   end
   
   module ClassMethods
     def before_filter(method)
-      set_callback :process, :before, method
+      self.before_filters += [method]
     end
     def after_filter(method)
-      set_callback :process, :after, method
+      self.after_filters += [method]
     end
     def around_filter(method)
-      set_callback :process, :around, method
+      self.around_filters += [method]
     end
   end
   
   def filter
-    run_callbacks :process do
+    process_proc = proc do
+      before_filters.each { |method| send(method) }
       yield
+      after_filters.each { |method| send(method) }
     end
+    
+    around_filters.reverse.each do |method|
+      proc = process_proc
+      process_proc = proc { send(method, &proc) }
+    end
+    
+    process_proc.call
   end
 end
