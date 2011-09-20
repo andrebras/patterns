@@ -35,11 +35,13 @@ module Filters
       after_filters.each { |method| send(method) }
     end
     
+    # Wrapping each proc in a new one for each around filter.
     around_filters.reverse.each do |method|
       proc = process_proc
       process_proc = proc { send(method, &proc) }
     end
     
+    # Calling top level proc to start cascading effect.
     process_proc.call
   end
 end
