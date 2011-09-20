@@ -31,6 +31,12 @@ module ActiveRecord
       @@connection.find_all(table_name).map do |attributes|
         new(attributes)
       end
+      # Whitout `map`
+      # array = []
+      # @@connection.find_all(table_name).each do |attributes|
+      #   array << new(attributes)
+      # end
+      # array
     end
     
     def self.table_name
